@@ -6,9 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
-import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnHomePage;
     private Button btnMap;
     private Button btnDetails;
+
+    private Spinner spNameslist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,21 @@ public class MainActivity extends AppCompatActivity {
 
         makeBtnDetails();
 
+        makeSpNamesList();
+    }
+
+    private void makeSpNamesList() {
+        spNameslist = findViewById(R.id.sp_nameslist);
+
+        String[] nameslist ={"Jan", "Piet", "Joris", "Korneel", "Iemand zonder baard"};
+
+
+        //adapter -> klasse die elementen uit lijst in layout steekt per rij voor bv; spinner, listview
+        //arrayadapter enkel layouts met 1 textveld (1 lijn tekst per rij)
+
+        ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, nameslist);
+
+        spNameslist.setAdapter(mArrayAdapter);
     }
 
     private void makeBtnMap() {
@@ -71,8 +89,19 @@ public class MainActivity extends AppCompatActivity {
     private void makeBtnDetails() {
         btnDetails = findViewById(R.id.btn_details);
 
-        Uri uri = Uri.parse("voicemail:+32484295759");
+        btnDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        btnDetails.setOnClickListener(makeOnClickparser(uri));
+                String selectedName = (String) spNameslist.getSelectedItem();
+
+
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                intent.putExtra("name", selectedName);
+
+                startActivity(intent);
+
+            }
+        });
     }
 }
